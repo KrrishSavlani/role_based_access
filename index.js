@@ -1,11 +1,11 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const coockieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser'); // Fixed spelling
 const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(express.json());
-app.use(coockieParser());
+app.use(cookieParser());
 dotenv.config();
 
 const user = {name : "krrish" , age : 20 , role : "admin"};
