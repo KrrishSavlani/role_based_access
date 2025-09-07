@@ -2,13 +2,15 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser'); // Fixed spelling
 const jwt = require('jsonwebtoken');
-
 const app = express();
+
+
+
 app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
 
-const user = {name : "krrish" , age : 20 , role : "admin"};
+const user = {name : "krrish" , age : 20 , role : "adminn" };
 function generateToken(){
     const token = jwt.sign({...user} , process.env.SECRET_KEY);
     return "Bearer " + token ;
@@ -16,10 +18,10 @@ function generateToken(){
 
 function verifyToken(token)
 {
-    if(jwt.verify(token , process.env.SECRET_KEY)){
+    try {
+        jwt.verify(token, process.env.SECRET_KEY);
         return true;
-    }
-    else {
+    } catch (err) {
         return false;
     }
 }
@@ -27,12 +29,13 @@ function verifyToken(token)
 function verifyAdmin(token)
 {
     try {
-        const decodedToken = jwt.decode(token, process.env.SECRET_KEY)
-        console.log(decodedToken.role);
-        if(decodedToken.role !== "admin") {caches("you are not authorized"); return false;}
-        else return true;
-    }catch (err) {
-        return null;
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        if(decodedToken.role !== "admin") {
+            return false;
+        }
+        return true;
+    } catch (err) {
+        return false;
     }
 }
 
@@ -45,8 +48,8 @@ app.get('/',function(req,res){
 app.get("/admin"  , (req  , res) => {
 
     const token = req.cookies.token?.split(' ')[1];
-    if(!token){res.redirect('login')}
-    else if(!verifyToken(token)){res.redirect('login')}
+    if(!token){ return res.redirect('login')}
+    else if(!verifyToken(token)){return res.redirect('login')}
     else {
         if(!verifyAdmin(token)) { return res.send("you are not authorized")}
         else {
@@ -56,6 +59,8 @@ app.get("/admin"  , (req  , res) => {
 })
 
 app.get('/login', (req,res)=>{
+    //if(req.body.name || !req.cookies.token){res.redirect('login')}
+
     res.send("login page");
 })
 
