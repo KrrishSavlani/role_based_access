@@ -1,5 +1,5 @@
 const userModel = require("../model/user");
-
+const {generateHash , verifyHash} = require("./passHash");
 async function signup(user) {
     try {
         const existingUserName = await userModel.findOne({ userName: user.userName });
@@ -16,8 +16,9 @@ async function signup(user) {
             return "Username is not availible";
         }
 
-
+        user.password = await generateHash(user.password);
         const newUser = await userModel.create(user);
+
         console.log("inserting user");
         return "success";
     } catch (err) {
@@ -25,3 +26,4 @@ async function signup(user) {
     }
 }
 module.exports = { signup };
+
