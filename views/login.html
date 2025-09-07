@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>RBAC</title>
+    <title>RBAC - Login</title>
 </head>
 <body>
 <form onsubmit="login(event)">
@@ -15,8 +15,13 @@
     async function login(event) {
         event.preventDefault(); // Prevent the default form submission
 
-        const userName = document.getElementById('userName').value;
+        const userName = document.getElementById('userName').value.trim();
         const password = document.getElementById('password').value;
+
+        if (!userName || !password) {
+            alert('Please fill in all fields.');
+            return;
+        }
 
         try {
             const response = await fetch('/api/login', {
@@ -27,14 +32,14 @@
                 body: JSON.stringify({ userName, password })
             });
 
+            const data = await response.json(); // Parse the JSON response
+
             if (response.ok) {
-                const data = await response.json();
-                alert('Login successful!');
+                alert(data); // Display the server's success message
                 console.log(data);
-                // Redirect or handle success
+                window.location.href = '/api/'; // Redirect to the home page
             } else {
-                const error = await response.json();
-                alert('Login failed: ' + error.message);
+                alert(data); // Display the server's error message
             }
         } catch (err) {
             console.error('Error:', err);

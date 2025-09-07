@@ -2,11 +2,12 @@ const userModel = require("../model/user");
 const {generateHash , verifyHash} = require("./passHash");
 async function signup(user) {
     try {
+
         const existingUserName = await userModel.findOne({ userName: user.userName });
         const existingEmail = await userModel.findOne({ email: user.email });
-
-
         const existingUser = await userModel.findOne({ userName: user.userName, email: user.email });
+
+
         if(existingUser){return "User already exists";}
         if (existingEmail) {
             return "Email ID already exists";
@@ -26,4 +27,3 @@ async function signup(user) {
     }
 }
 module.exports = { signup };
-
