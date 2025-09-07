@@ -4,8 +4,8 @@ function fetchToken(req, res, next) {
     if(!token) {req.token = false; }
     else {
         req.token = token;
-        const publicRoutes = ['/api/login', '/api/signup'];
-        if (publicRoutes.includes(req.path)) {
+        const authRoutes = ['/api/login', '/api/signup'];
+        if (authRoutes.includes(req.path)) {
             return res.redirect('/api/'); // Skip middleware for public routes
         }
 
@@ -18,8 +18,8 @@ function getToken(req, res, next) {
 }
 
 function verifyToken(req, res, next) {
-    const publicRoutes = ['/api/login', '/api/signup'];
-    if (publicRoutes.includes(req.path)) {
+    const authRoutes = ['/api/login', '/api/signup'];
+    if (authRoutes.includes(req.path)) {
         return next(); // Skip middleware for public routes
     }
 
