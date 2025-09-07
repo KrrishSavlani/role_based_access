@@ -3,13 +3,44 @@
     <title>RBAC</title>
 </head>
 <body>
-<form>
+<form onsubmit="login(event)">
     <h1>Login Page</h1>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username"><br><br>
+    <label for="userName">Username:</label>
+    <input type="text" id="userName" name="userName" required><br><br>
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password"><br><br>
+    <input type="password" id="password" name="password" required><br><br>
     <input type="submit" value="Login">
 </form>
+<script>
+    async function login(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const userName = document.getElementById('userName').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userName, password })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                alert('Login successful!');
+                console.log(data);
+                // Redirect or handle success
+            } else {
+                const error = await response.json();
+                alert('Login failed: ' + error.message);
+            }
+        } catch (err) {
+            console.error('Error:', err);
+            alert('An error occurred while logging in.');
+        }
+    }
+</script>
 </body>
 </html>

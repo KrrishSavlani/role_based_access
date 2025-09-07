@@ -3,15 +3,46 @@
     <title>RBAC</title>
 </head>
 <body>
-<form>
-    <h1> sign in page</h1>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username"><br><br>
+<form onsubmit="signup(event)">
+    <h1>Sign In Page</h1>
+    <label for="userName">Username:</label>
+    <input type="text" id="userName" name="userName" required><br><br>
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password"><br><br>
-    <lable for ="email">Email:</lable>
-    <input type="email" id="email" name="email"><br><br>
-    <input type="submit" value="sign in">
+    <input type="password" id="password" name="password" required><br><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br><br>
+    <input type="submit" value="Sign Up">
 </form>
+<script>
+    async function signup(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const userName = document.getElementById('userName').value;
+        const password = document.getElementById('password').value;
+        const email = document.getElementById('email').value;
+
+        try {
+            const response = await fetch('/api/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userName, password, email })
+            });
+
+            if (response.ok) {
+                const data = await response.json(); // Parse JSON response
+                alert(data.reply); // Use the correct property from the server response
+                console.log(data.reply);
+            } else {
+                const error = await response.json();
+                alert('Signup failed: ' + error.message);
+            }
+        } catch (err) {
+            console.error('Error:', err);
+            alert('An error occurred while signing up.');
+        }
+    }
+</script>
 </body>
 </html>
